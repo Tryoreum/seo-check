@@ -1,0 +1,12 @@
+{
+  "name": "@tryoreum/seo-check",
+  "version": "1.0.0",
+  "description": "한 페이지의 기본 SEO 신호를 터미널에서 확인 · 한글 제목 폭 · 네이버 Yeti 허용 · canonical 리디렉션 실검사",
+  "type": "module",
+  "bin": { "seo-check": "./seo-check.mjs" },
+  "engines": { "node": ">=18" },
+  "keywords": ["seo", "korean", "naver", "canonical", "robots.txt", "cli"],
+  "homepage": "https://tryoreum.github.io/seo-check/",
+  "repository": { "type": "git", "url": "https://github.com/tryoreum/seo-check" },
+  "license": "MIT"
+}
