@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>seo-check · 한국 사이트용 SEO 체크 스크립트 (의존성 없음)</title>
+<meta name="description" content="한글 제목 폭, 네이버 Yeti 허용, canonical 리디렉션을 실제로 확인하는 무료 오픈소스 SEO 체크 스크립트. Node 18 이상, 설치 없이 실행.">
+<link rel="canonical" href="https://tryoreum.github.io/seo-check/">
+<meta property="og:title" content="seo-check · 한국 사이트용 SEO 체크 스크립트">
+<meta property="og:description" content="한글 제목 폭 · 네이버 Yeti 허용 · canonical 리디렉션을 실제로 확인. 의존성 없는 오픈소스.">
+<meta property="og:url" content="https://tryoreum.github.io/seo-check/">
+<meta property="og:type" content="website">
+<style>
+  :root{--pri:#6c5ce7;--tx:#1c1c22;--tx2:#4a4a58;--tx3:#8a8a99;--line:#e6e6ee;--bg:#fff}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Pretendard,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans KR",sans-serif;color:var(--tx);background:var(--bg);line-height:1.7}
+  .wrap{max-width:760px;margin:0 auto;padding:56px 22px 80px}
+  h1{font-size:34px;letter-spacing:-.03em;margin:0 0 8px}
+  h2{font-size:20px;letter-spacing:-.02em;margin:40px 0 10px}
+  .lead{font-size:17px;color:var(--tx2);margin:0 0 26px}
+  pre{background:#14141b;color:#e8e8f0;border-radius:12px;padding:16px 18px;overflow:auto;font-size:13.5px;line-height:1.6}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .btns{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0 6px}
+  .btn{display:inline-block;padding:11px 18px;border-radius:10px;font-weight:700;text-decoration:none;font-size:15px}
+  .btn-pri{background:var(--pri);color:#fff}
+  .btn-gh{border:1px solid var(--line);color:var(--tx)}
+  table{border-collapse:collapse;width:100%;font-size:14.5px}
+  td,th{border-top:1px solid var(--line);padding:9px 8px;text-align:left;vertical-align:top}
+  th{color:var(--tx3);font-weight:600;font-size:13px}
+  .foot{margin-top:56px;padding-top:18px;border-top:1px solid var(--line);color:var(--tx3);font-size:13.5px}
+  a{color:var(--pri)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>seo-check</h1>
+  <p class="lead">한 페이지의 기본 SEO 신호를 터미널에서 5초 만에. 의존성 없음, Node 18 이상.<br>
+  한글 제목 <b>폭</b>으로 잘림을 판정하고, 네이버 크롤러 <b>Yeti</b> 허용을 보고, <b>canonical 이 리디렉션되는지 실제로 요청</b>해 확인합니다.</p>
+
+  <div class="btns">
+    <a class="btn btn-pri" href="https://github.com/tryoreum/seo-check">GitHub 에서 보기</a>
+    <a class="btn btn-gh" href="https://raw.githubusercontent.com/tryoreum/seo-check/main/seo-check.mjs">스크립트 원본</a>
+  </div>
+
+  <h2>실행</h2>
+<pre><code>curl -O https://raw.githubusercontent.com/tryoreum/seo-check/main/seo-check.mjs
+node seo-check.mjs https://example.com</code></pre>
+
+  <h2>이런 게 나옵니다</h2>
+<pre><code>https://example.com/
+
+  title        예시 회사 | 서비스 소개  [폭 22]
+  description  (없음)
+  canonical    https://example.com  → HTTP 301 → https://example.com/
+  h1           1개
+  og           title ✓ · description ✗ · image ✓
+  robots.txt   Googlebot 허용 · Yeti(네이버) 차단 · Bingbot 허용
+
+  ▲ meta description 이 없습니다
+  ✖ canonical 이 리디렉션됩니다 → https://example.com/
+  ✖ robots.txt 가 Yeti 을 막고 있습니다</code></pre>
+
+  <h2>검사 항목</h2>
+  <table>
+    <tr><th>항목</th><th>기준</th></tr>
+    <tr><td>title</td><td>없음 · 폭 60 초과(한글 약 30자, 검색결과 잘림) · 폭 20 미만</td></tr>
+    <tr><td>meta description</td><td>없음 · 폭 160 초과</td></tr>
+    <tr><td>canonical</td><td>없음 · 실제 요청해 3xx 면 오류(끝 슬래시 불일치) · 404</td></tr>
+    <tr><td>h1</td><td>0개 또는 2개 이상</td></tr>
+    <tr><td>OG 태그</td><td>og:title · og:description · og:image 누락, 상대주소</td></tr>
+    <tr><td>robots.txt</td><td>Googlebot · Yeti · Bingbot 이 <code>Disallow: /</code> 로 막혔는지</td></tr>
+    <tr><td>기타</td><td>meta robots noindex · lang · viewport · JSON-LD 유무</td></tr>
+  </table>
+
+  <h2>왜 만들었나</h2>
+  <p>정적 사이트를 배포한 뒤 서치콘솔에 "리디렉션이 포함된 페이지" 가 56개 잡혔습니다. canonical 과 사이트맵에 끝 슬래시를 안 붙였고 호스팅은 슬래시 붙은 주소로 301 시키고 있었습니다. 사이트는 멀쩡히 열려서 눈으로는 못 찾는 문제였습니다. 배포 직후 한 번 돌리면 잡히는 것들을 모았습니다.</p>
+  <p>사이트 전체를 크롤해서 8개 영역 점수와 페이지별 감점 내역까지 보려면 웹 버전인 <a href="https://tryoreum.com/">오름 무료 SEO 진단</a>을 쓰시면 됩니다. 이 스크립트는 그중 한 페이지짜리 핵심만 떼어 온 것입니다.</p>
+
+  <div class="foot">MIT License · <a href="https://tryoreum.com/">tryoreum.com</a></div>
+</div>
+</body>
+</html>
